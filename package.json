@@ -1,0 +1,42 @@
+{
+  "name": "node-red-contrib-reusable-flows",
+  "version": "0.1.0",
+  "description": "a single Node-RED node representing a complete self-contained Flow",
+  "node-red": {
+    "nodes": {
+      "reusable-flows": "reusable-flows.js"
+    }
+  },
+  "scripts": {
+    "build": "rimraf reusable-flows && rollup -c rollup.config.js && tsc && cp src/*.html ./reusable-flows && rm src/*.js*",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rozek/node-red-contrib-reusable-flows.git"
+  },
+  "keywords": [
+    "node-red",
+    "javascript",
+    "function",
+    "node"
+  ],
+  "author": "Andreas Rozek <a.rozek@gmx.de> (https://www.rozek.de/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rozek/node-red-contrib-reusable-flows/issues"
+  },
+  "homepage": "https://github.com/rozek/node-red-contrib-reusable-flows#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.56.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "javascript-interface-library": "^1.0.0"
+  }
+}
