@@ -9,7 +9,7 @@ export default {
   input: './src/reusable-flows.ts',
   output: [
     {
-      file:     './javascript-function/reusable-flows.js',
+      file:     './reusable-flows/reusable-flows.js',
       format:    'cjs',
       name:      'reusable-flows',
       noConflict:true,
