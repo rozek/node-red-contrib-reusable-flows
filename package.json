@@ -4,7 +4,7 @@
   "description": "a single Node-RED node representing a complete self-contained Flow",
   "node-red": {
     "nodes": {
-      "reusable-flows": "reusable-flows.js"
+      "reusable-flows": "reusable-flows/reusable-flows.js"
     }
   },
   "scripts": {
