@@ -1,0 +1,140 @@
+<script type="text/javascript">
+  RED.nodes.registerType('reusable-in', {
+    category: 'advanced',
+    defaults: {
+      name: {value:'reusable in'},
+      info: {value:'describe your reusable flow here'},
+      scope:{value:'local'}
+    },
+    inputs: 0,
+    outputs:1,
+    color:  '#E9967A',
+    label: function() {
+      let Label = this.name || 'reusable in'
+      return (this.scope === 'local' ? '[' + Label + ']' : Label)
+    },
+    icon: 'font-awesome/fa-sign-in',
+
+    oneditprepare: function () {
+      this.InfoEditor = RED.editor.createEditor({
+        id:  'node-description-editor',
+        mode:'ace/mode/markdown',
+        value: $('#node-input-info').val()
+      })
+    },
+
+    oneditsave: function () {
+      $('#node-input-info').val(this.InfoEditor.getValue())
+      this.InfoEditor.destroy()
+      delete this.InfoEditor
+    },
+
+    oneditcancel: function () {
+      this.InfoEditor.destroy()
+      delete this.InfoEditor
+    },
+  })
+</script>
+
+<script type="text/html" data-template-name="reusable-in">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name"/>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-scope"><i class="fa fa-random"></i> Scope</label>
+    <select id="node-input-scope">
+      <option value="local" >local</option>
+      <option value="global">global</option>
+    </select>
+  </div>
+
+  <div class="form-row" style="margin-bottom:0px">
+    <label for="node-input-info">Description</label>
+    <a href="https://guides.github.com/features/mastering-markdown"
+      target="_blank" style="font-size:smaller; float:right">markdown</a>
+    <input type="hidden" id="node-input-info" autofocus/>
+  </div>
+  <div class="form-row node-text-editor-row">
+    <div id="node-description-editor" class="node-text-editor"
+      style="height:250px; min-height:150px"></div>
+  </div>
+</script>
+<script type="text/javascript">
+  RED.nodes.registerType('reusable-out', {
+    category: 'advanced',
+    defaults: {
+      name: {value:'reusable out'}
+    },
+    inputs: 1,
+    outputs:0,
+    color:  '#E9967A',
+    label: function() {
+      return this.name || 'reusable out'
+    },
+    icon: 'font-awesome/fa-sign-out',
+    align:'right',
+  })
+</script>
+
+<script type="text/html" data-template-name="reusable-out">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+</script>
+<script type="text/javascript">
+  function validateTargetFlow (Event) {
+//  TargetFlowInput[0].style.color = (TargetFlow == null ? 'red' : 'inherit')
+  }
+
+  RED.nodes.registerType('reusable', {
+    category: 'advanced',
+    defaults: {
+      name:   {value:''},
+      target: {value:'', required:true}
+    },
+    inputs: 1,
+    outputs:1,
+    color:  '#E9967A',
+    label: function() {
+      return this.name || (this.target === '' ? null : this.target) || 'reusable'
+    },
+    icon: 'font-awesome/fa-refresh',
+
+    oneditprepare: function () {
+      let Node = this
+      $('#node-input-target').on('input',validateTargetFlow)
+    },
+
+    oneditsave: function () {
+      let Node = this
+      $('#node-input-target').off('input',validateTargetFlow)
+    },
+
+    oneditcancel: function () {
+      let Node = this
+      $('#node-input-target').off('input',validateTargetFlow)
+    },
+  })
+</script>
+
+<script type="text/html" data-template-name="reusable">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-target">Target Flow</label>
+    <input type="text" id="node-input-target" placeholder="Target Flow Specifier">
+  </div>
+</script>
+
+
+<script type="text/html" data-help-name="reusable-flows">
+  <p>
+    (tbd)
+  </p>
+</script>
