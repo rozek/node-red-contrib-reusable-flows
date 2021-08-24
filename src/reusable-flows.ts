@@ -55,18 +55,14 @@
 
           let callingNodeId = Internals.Stack.pop()
           if (callingNodeId == null) {
-            throw new Error()
+            throw 'reusable-out: no reusable to return to found'
           } else {
             Internals.Mode = 'return'
             RED.events.emit('reusable:' + callingNodeId, msg)
             if (done) { done() }
           }
         } catch (Signal) {
-          console.error('broken msg',msg)
-          Node.error('broken msg')
-          Node.status({ fill:'red', shape:'dot', text:'broken msg' })
-
-          if (done) { done() }
+          throw 'reusable-out: broken "msg" (broken or missing internals)'
         }
       })
     }
@@ -87,9 +83,7 @@
         send = send || function () { Node.send.apply(Node,arguments) }
 
         if (FlowToCall == null) {
-          send(msg)
-          if (done) { done() }
-          return
+          throw 'reusable: no flow found that could be called'
         }
 
         let Internals = msg._reusableFlows
@@ -109,12 +103,7 @@
             if (done) { done() }
             break
           default:                                                 // broken msg
-            console.error('broken msg',msg)
-            Node.error('broken msg')
-            Node.status({ fill:'red', shape:'dot', text:'broken msg' })
-
-            send(null)
-            if (done) { done() }
+            throw 'reusable: broken "msg" (missing "Mode")'
         }
       })
 
@@ -136,7 +125,7 @@
         FlowToCall = Callee
 
         if (FlowToCall == null) {
-          Node.status({ fill:'yellow', shape:'ring', text:'no flow to call' })
+          Node.status({ fill:'red', shape:'dot', text:'no flow to call' })
         } else {
           Node.status({})
         }
@@ -157,7 +146,6 @@
   /**** mapCallersToCallees ****/
 
     function mapCallersToCallees ():void {
-console.log('\n\n\nmapCallersToCallees')
       let Workspaces = Object.create(null)
       let Subflows   = Object.create(null)
 
@@ -192,50 +180,6 @@ console.log('\n\n\nmapCallersToCallees')
         return (foundTab == null ? undefined : TabOfNode(foundTab))
       }
 
-    /**** listWorkspaces ****/
-
-      function listWorkspaces ():void {
-        console.log('Workspaces:')
-        for (let Id in Workspaces) {
-          let Workspace = Workspaces[Id]
-          console.log('  ' + Id + ': "' + Workspace.label + '"')
-        }
-      }
-
-    /**** listSubflows ****/
-
-      function listSubflows ():void {
-        console.log('Subflows:')
-        for (let Id in Subflows) {
-          let Subflow = Subflows[Id]
-          console.log('  ' + Id + ': "' + Subflow.label + '"')
-        }
-      }
-
-    /**** listReusables ****/
-
-      function listReusables ():void {
-        console.log('Reusables:')
-        for (let Id in Reusables) {
-          let Reusable = Reusables[Id]
-          console.log(
-            '  ' + Id + ': "' + Reusable.name + '" -> "' + Reusable.target + '"'
-          )
-        }
-      }
-
-    /**** listReusablesIn ****/
-
-      function listReusablesIn ():void {
-        console.log('ReusablesIn:')
-        for (let Id in ReusablesIn) {
-          let ReusableIn = ReusablesIn[Id]
-          console.log(
-            '  ' + Id + ': "' + ReusableIn.name + '"'
-          )
-        }
-      }
-
 
 
     /**** collect workspaces, subflows, reusable_ins and reusables ****/
@@ -253,18 +197,14 @@ console.log('\n\n\nmapCallersToCallees')
             break
         }
       })
-listWorkspaces()
-listReusablesIn()
-listReusables()
 
     /**** construct mappings and inform reusables ****/
 
       function inform (CallerId:string, Callee:NR_Node):void {
-console.log('mapping ',CallerId,'->',Callee == null ? '-' : '"' + Callee.name + '"')
         RED.events.emit('reusable:' + CallerId + '-FlowToCall', Callee)
       }
 
-outerLoop: for (let CallerId in Reusables) {
+      outerLoop: for (let CallerId in Reusables) {
         let Caller = Reusables[CallerId]
 
         let [CalleeTabName,CalleeName] = (Caller.target || '').toLowerCase().split(':')
@@ -297,7 +237,6 @@ outerLoop: for (let CallerId in Reusables) {
 
         inform(CallerId,undefined) // no callee found
       }
-console.log('\n')
     }
 
     RED.events.on('flows:started', mapCallersToCallees)
