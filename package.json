@@ -8,7 +8,7 @@
     }
   },
   "scripts": {
-    "build": "rimraf reusable-flows && rollup -c rollup.config.js && tsc && cp src/*.html ./reusable-flows && cp src/*.d.ts ./reusable-flows && rm src/*.js*",
+    "build": "rimraf reusable-flows && rollup -c rollup.config.js && tsc && cp src/*.html ./reusable-flows && mv src/*.d.ts ./reusable-flows && rm src/*.js*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
