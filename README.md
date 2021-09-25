@@ -14,7 +14,12 @@ Three types of nodes are involved:
 
 ### Alternatives ###
 
-Node-RED
+Node-RED (and its ecosystem) already offer some mechanisms to structure non-trivial flows:
+
+* **Subflows** are very similar to "reusable flows" - but each subflow consumes its own tab in the editor which makes work with many subflows unmanageable
+* **Link In** and **Link Out** nodes have their own raison d'être but are more like "goto"s rather than invocations
+* **Action Flows** (from [node-red-contrib-actionflows](https://flows.nodered.org/node/node-red-contrib-actionflows)) are really powerful, put their name prefix matching scheme can lead to difficulat to find problems - and they do not support multiple outputs
+* **Components** (from [node-red-contrib-components](https://flows.nodered.org/node/node-red-contrib-components)) come quite close to what "reusable flows" aim to provide - but the association between "callers" and "callees" is based on the unique ids of the associated nodes which causes several problems
 
 
 > Nota bene: this work is currently in progress. Please don't expect it to be finished before end of September 2021
