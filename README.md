@@ -23,11 +23,11 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 * **Action Flows** (from [node-red-contrib-actionflows](https://flows.nodered.org/node/node-red-contrib-actionflows)) are really powerful, put their name prefix matching scheme can lead to difficulat to find problems - and they do not support multiple outputs
 * **Components** (from [node-red-contrib-components](https://flows.nodered.org/node/node-red-contrib-components)) come quite close to what "reusable flows" aim to provide - but the association between "callers" and "callees" is based on the unique ids of the associated nodes which causes several problems
 
-### Reusable Flows vs. Subroutines (or Procedures or Functions) ###
+### Reusable Flows vs. Subroutines (or Procedures, Functions, Methods...) ###
 
 (The following explanation also applies to subflows, "action flows" and "components")
 
-Invoking a separate flow differs considerably from calling a "subroutine" (sometimes called "function", "procedure" or similar): in most programming languages, subroutine invocations create a new "activation context" for arguments, local variables and inner subroutine calls. Any assignments made within a subroutine do not interfere with the calling environment (unless the programming language allows you to pass arguments "by reference" or pass objects as arguments and modify the contents of these objects). Similarly, inner subroutine calls do not interfere neither with the calling subroutine nor with that subroutine's calling environment (again, some progamming languages allow you to break that rule - but, actually, subroutines were invented for just this isolation)
+Invoking a separate flow differs considerably from calling a "subroutine" (sometimes called "function", "procedure", "method" or similar): in most programming languages, subroutine invocations create a new "activation context" for arguments, local variables and inner subroutine calls. Any assignments made within a subroutine do not interfere with the calling environment (unless the programming language allows you to pass arguments "by reference" or pass objects as arguments and modify the contents of these objects). Similarly, inner subroutine calls do not interfere neither with the calling subroutine nor with that subroutine's calling environment (again, some progamming languages allow you to break that rule - but, actually, subroutines were invented for just this isolation)
 
 However, Node-RED works differently.
 
