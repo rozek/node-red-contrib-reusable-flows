@@ -33,9 +33,9 @@ In Node-RED, complete "_states_" as passed from one node to the next. These stat
 
 Because of this behaviour, it is sometimes necessary to preserve important `msg` properties before other nodes are triggered (this includes nodes representing separate flows) and to restore them afterwards - or, if the same message is to be routed to multiple paths, to "clone" a `msg` (rather than to create new ones) in order to keep any additional state information intact.
 
-Not keeping this implementation detail in mind (always!) may lead to unpredicatable behaviour of "downstream" nodes!
+_Not keeping this implementation detail in mind may lead to unpredicatable behaviour of "downstream" nodes!_
 
-The current version of `node-red-contrib-reusable-flows` does not offer explicit support for preserving and restoring important `msg` properties (this is planned for a later release) and leaves it up to the developer to handle them properly.
+> Nota bene: the current version of `node-red-contrib-reusable-flows` does not offer explicit support for preserving and restoring important `msg` properties (this is planned for a later release) and leaves it up to the developer to handle them properly.
 
 ![](reusable-flows.png)
 
