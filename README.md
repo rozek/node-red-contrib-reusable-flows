@@ -12,6 +12,8 @@ Three types of nodes are involved:
 * `reusable-out` - ends a "reusable flow" (multiple `reusable-out` nodes are allowed for any `reusable-in`)
 * `reusable` - effectively "invokes" a reusable flow (i.e., the incoming `msg` is passed to the associated `reusable-in` and the `msg` read by the first connected `reusable-out` passed to the appropriate output of this `reusable` node)
 
+> Nota bene: this work is currently in progress. Please don't expect it to be finished before end of September 2021
+
 ### Alternatives ###
 
 Node-RED (and its ecosystem) already offer some mechanisms to structure non-trivial flows:
@@ -38,8 +40,6 @@ _Not keeping this implementation detail in mind may lead to unpredicatable behav
 > Nota bene: the current version of `node-red-contrib-reusable-flows` does not offer explicit support for preserving and restoring important `msg` properties (this is planned for a later release) and leaves it up to the developer to handle them properly.
 
 ![](reusable-flows.png)
-
-> Nota bene: this work is currently in progress. Please don't expect it to be finished before end of September 2021
 
 ## License ##
 
