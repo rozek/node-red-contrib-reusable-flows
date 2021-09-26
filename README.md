@@ -23,7 +23,7 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 * **Action Flows** (from [node-red-contrib-actionflows](https://flows.nodered.org/node/node-red-contrib-actionflows)) are really powerful, put their name prefix matching scheme can lead to difficulat to find problems - and they do not support multiple outputs
 * **Components** (from [node-red-contrib-components](https://flows.nodered.org/node/node-red-contrib-components)) come quite close to what "reusable flows" aim to provide - but the association between "callers" and "callees" is based on the unique ids of the associated nodes which causes several problems
 
-### Reusable Flows vs. Subroutines ###
+### Reusable Flows vs. Subroutines (or Procedures or Functions) ###
 
 (The following explanation also applies to subflows, "action flows" and "components")
 
