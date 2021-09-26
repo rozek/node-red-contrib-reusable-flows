@@ -27,7 +27,7 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 Invoking a separate flow differs considerably from calling a "subroutine" (sometimes called "function", "procedure" or similar): in most programming languages, subroutine invocations create a new "activation context" for arguments, local variables and inner subroutine calls. Any assignments made within a subroutine do not interfere with the calling environment (unless the programming language allows you to pass arguments "by reference" or pass objects as arguments and modify the contents of these objects). Similarly, inner subroutine calls do not interfere neither with the calling subroutine nor with that subroutine's calling environment (again, some progamming languages allow you to break that rule - but, actually, subroutines were invented for just this isolation)
 
-But Node-RED works differently.
+However, Node-RED works differently.
 
 In Node-RED, complete "_states_" as passed from one node to the next. These states include any invocation arguments (the most important one is `msg.payload`) but also any other data which may be needed to complete an operation (an important example are the `msg` properties set by an `HTTP in` node which are later needed by an `HTTP out` node in order to complete a request). Node "results" are often saved into `msg.payload` again, effectively overwriting the initial invocation argument.
 
