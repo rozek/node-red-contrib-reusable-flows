@@ -29,7 +29,7 @@ Invoking a separate flow differs considerably from calling a "subroutine" (somet
 
 However, Node-RED works differently.
 
-In Node-RED, complete "_states_" as passed from one node to the next. These states include any invocation arguments (the most important one is `msg.payload`) but also any other data which may be needed to complete an operation (an important example are the `msg` properties set by an `HTTP in` node which are later needed by an `HTTP out` node in order to complete a request). Node "results" are often saved into `msg.payload` again, effectively overwriting the initial invocation argument.
+In Node-RED, complete "_states_" as passed from one node to the next. These states include any invocation arguments (the most important one is `msg.payload`) but also any other data which may be needed to complete an operation (an important example are the `msg` properties set by an `HTTP in` node which are later used by an `HTTP out` node to complete a request). Node "results" are often saved into `msg.payload` again, effectively overwriting the initial invocation argument.
 
 Because of this behaviour, it is sometimes necessary to preserve important `msg` properties before other nodes are triggered (this includes nodes representing separate flows) and restore them afterwards - or, if the same message is to be routed to multiple paths, to "clone" a `msg` (rather than to create new ones) in order to keep any additional state information intact.
 
