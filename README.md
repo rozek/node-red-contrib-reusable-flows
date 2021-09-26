@@ -21,6 +21,22 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 * **Action Flows** (from [node-red-contrib-actionflows](https://flows.nodered.org/node/node-red-contrib-actionflows)) are really powerful, put their name prefix matching scheme can lead to difficulat to find problems - and they do not support multiple outputs
 * **Components** (from [node-red-contrib-components](https://flows.nodered.org/node/node-red-contrib-components)) come quite close to what "reusable flows" aim to provide - but the association between "callers" and "callees" is based on the unique ids of the associated nodes which causes several problems
 
+### Reusable Flows vs. Subroutines ###
+
+(The following explanation also applies to subflows, "action flows" and "components")
+
+Invoking a separate flow differs considerably from calling a "subroutine" (sometimes called "function", "procedure" or similar): in most programming languages, subroutine invocations create a new "activation context" for arguments, local variables and inner subroutine calls. Any assignments made within a subroutine do not interfere with the calling environment (unless the programming language allows you to pass arguments "by reference" or pass objects as arguments and modify the contents of these objects). Similarly, inner subroutine calls do not interfere neither with the calling subroutine nor with that subroutine's calling environment (again, some progamming languages allow you to break that rule - but, actually, subroutines were invented for just this isolation)
+
+But Node-RED works differently.
+
+In Node-RED, complete "_states_" as passed from one node to the next. These states include any invocation arguments (the most important one is `msg.payload`) but also any other data which may be needed to complete an operation (an important example are the `msg` properties set by an `HTTP in` node which are later needed by an `HTTP out` node in order to complete a request). Node "results" are often saved into `msg.payload` again, effectively overwriting the initial invocation argument.
+
+Because of this behaviour, it is sometimes necessary to preserve important `msg` properties before other nodes are triggered (this includes nodes representing separate flows) and restore them afterwards - or, if the same message is to be routed to multiple paths, to "clone" a `msg` (rather than to create new ones) in order to keep any additional state information intact.
+
+Not keeping this implementation detail in mind (always!) may lead to unpredicatable behaviour of "downstream" nodes!
+
+The current version of `node-red-contrib-reusable-flows` does not offer explicit support for preserving and restoring important `msg` properties (this is planned for a later release) and leaves it up to the developer to handle them properly.
+
 ![](reusable-flows.png)
 
 > Nota bene: this work is currently in progress. Please don't expect it to be finished before end of September 2021
