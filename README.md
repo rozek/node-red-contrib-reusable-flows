@@ -31,7 +31,7 @@ Invoking a separate flow differs considerably from calling a "subroutine" (somet
 
 However, Node-RED works differently.
 
-In Node-RED, complete "_states_" as passed from one node to the next. These states include any invocation arguments (the most important one is `msg.payload`) but also any other data which may be needed to complete an operation (an important example are the `msg` properties set by an `HTTP in` node which are later used by an `HTTP out` node to complete a request). The results of a node operation are often saved into `msg.payload` again, effectively overwriting the initial invocation argument.
+In Node-RED, complete "_states_" as passed from one node to the next. These states include any invocation arguments (the most important one is `msg.payload`) but also any other data which may be needed to complete an operation (an important example are the `msg` properties set by an `HTTP in` node which are later used by an `HTTP out` node to respond an incoming request). The results of a node operation are often saved into `msg.payload` again, effectively overwriting the initial invocation argument.
 
 Additionally, flows do not provide any "local variables": if you want to store values in one node and use it in another, you will have to store them as part of `msg` and pass them on (nota bene: no, "flow contexts" do not serve that purpose since their contents persist - they should not even be abused for that purpose (_never!_) as nested invocations or multiple flow executions running simultaneously may lead to bugs which are really difficult to find (because their occurrence depends on actual execution timing)
 
