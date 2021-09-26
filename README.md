@@ -1,6 +1,6 @@
 # node-red-contrib-reusable-flows #
 
-`node-red-contrib-reusable-flows` provides nodes that represent complete flows.
+`node-red-contrib-reusable-flows` provides nodes that represent complete flows and make them "callable" from other flows.
 
 The desire for such a package arose from the need to be able to reuse existing flows without having to copy them and without having to spend a separate editor tab for each such flow.
 
