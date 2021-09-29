@@ -43,7 +43,23 @@ _Not keeping this implementation detail in mind may lead to unpredicatable behav
 
 ![](reusable-flows.png)
 
+![](reusables-on-same-tab.png)
+
+![](reusables-on-different-tab-I.png)
+
+![](reusables-on-different-tab-II.png)
+
+![](incorrect-reusable-nodes.png)
+
+![](incorrect-reusable-in-nodes.png)
+
+![](incorrect-reusable-out-nodes.png)
+
+
 ![](nested-invocations.png)
+
+![](recursive-invocations.png)
+
 
 ## Build Instructions ##
 
