@@ -43,6 +43,8 @@ _Not keeping this implementation detail in mind may lead to unpredicatable behav
 
 ![](reusable-flows.png)
 
+![](nested-invocations.png)
+
 ## Build Instructions ##
 
 You may easily build this package yourself.
