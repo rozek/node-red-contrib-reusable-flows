@@ -1,10 +1,112 @@
 <script type="text/javascript">
+  let editedNode     // "global" variable referring to the currently edited node
+
+/**** validateWorkspace ****/
+
+  function validateWorkspace () {
+    if (RED.nodes.subflow(this.z) == null) {
+      return true
+    } else {
+      $('#node-input-name-message').text('do not start reusable flows within subflows')
+      return false
+    }
+  }
+
+/**** validateInNodeName (while its entered) ****/
+
+  function validateInNodeName () {
+    let thisName = $('#node-input-name').val().trim().toLowerCase()
+    if (thisName === '') {
+      $('#node-input-name-message').text('no flow name given')
+      return
+    }
+
+    let thisWorkspace = RED.nodes.workspace(editedNode.z)
+    let thisWorkspaceHasOtherNodesWithThisName = false
+      RED.nodes.eachNode((Node) => {
+        if (
+          (Node.type === 'reusable-in')                   &&
+          (RED.nodes.workspace(Node.z) === thisWorkspace) &&
+          (Node      !== editedNode)                      &&
+          ((Node.name || '').trim().toLowerCase() === thisName)
+        ) { thisWorkspaceHasOtherNodesWithThisName = true }
+      })
+    if (thisWorkspaceHasOtherNodesWithThisName) {
+      $('#node-input-name-message').text('multiple "reusable-in" nodes with this name')
+      return
+    }
+
+    $('#node-input-name-message').html('&nbsp;')
+  }
+
+/**** collectOutLabels ****/
+
+  function collectOutLabels () {
+    let OutLabels = OutLabelsOfInNode(editedNode)
+  }
+
+/**** OutLabelsOfInNode ****/
+
+  function OutLabelsOfInNode (InNode) {
+    let wiredOutNodes = RED.nodes.getAllDownstreamNodes(InNode).filter(
+      (Node) => (Node.type === 'reusable-out')
+    )    // don't worry about OutNodes with multiple connected InNodes right now
+    if (wiredOutNodes.length === 0) {
+      $('#node-input-target-message').text('target flow has no connected "reusable-out" node')
+      return ['']
+    }
+
+    $('#node-input-target-message').html('&nbsp;')
+
+    let OutLabels
+    if (wiredOutNodes.length === 1) {
+      OutLabels = [ wiredOutNodes[0].name ]
+    } else {
+      let OutLabelSet = Object.create(null)
+
+      let sortedOutNodes = new Array(wiredOutNodes.length)
+        wiredOutNodes.forEach((OutNode) => {
+          let Index = OutNode.position-1
+          if (Index >= wiredOutNodes.length) {
+            $('#node-input-target-message').text('target flow has "reusable-out" node with invalid position')
+            return
+          }
+
+          if (sortedOutNodes[Index] == null) {     // detect position collisions
+            sortedOutNodes[Index] = OutNode
+          } else {
+            $('#node-input-target-message').text('target flow has multiple "reusable-out" nodes with the same position')
+            return
+          }
+
+          let OutLabel = (OutNode.name || '').trim().toLowerCase()
+          if (OutLabel !== '') {                      // detect label collisions
+            if (OutLabelSet[OutLabel] == null) {
+              OutLabelSet[OutLabel] = OutNode
+            } else {
+              $('#node-input-target-message').text('target flow has multiple "reusable-out" nodes with the same label')
+              return
+            }
+          }
+        })
+      OutLabels = sortedOutNodes.map((OutNode,Index) => {
+        return (OutNode == null ? '-' : OutNode.name)
+      })
+    }
+
+    return OutLabels
+  }
+
+
+
+/**** editor logic ****/
+
   RED.nodes.registerType('reusable-in', {
     category: 'advanced',
     defaults: {
-      name: {value:'reusable in'},
-      info: {value:'describe your reusable flow here'},
-      scope:{value:'local'}
+      name: { value:'',      required:true,             validate:validateWorkspace },
+      info: { value:'describe your reusable flow here', validate:validateWorkspace },
+      scope:{ value:'local', required:true,             validate:validateWorkspace },
     },
     inputs: 0,
     outputs:1,
@@ -16,6 +118,14 @@
     icon: 'font-awesome/fa-sign-in',
 
     oneditprepare: function () {
+      editedNode = this
+
+      validateWorkspace()                                 // initial validations
+      validateInNodeName()
+      collectOutLabels()
+
+      $('#node-input-name').on('input',validateInNodeName) // "live" validations
+
       this.InfoEditor = RED.editor.createEditor({
         id:  'node-description-editor',
         mode:'ace/mode/markdown',
@@ -24,12 +134,16 @@
     },
 
     oneditsave: function () {
+      $('#node-input-name').off('input',validateInNodeName)
+
       $('#node-input-info').val(this.InfoEditor.getValue())
       this.InfoEditor.destroy()
       delete this.InfoEditor
     },
 
     oneditcancel: function () {
+      $('#node-input-name').off('input',validateInNodeName)
+
       this.InfoEditor.destroy()
       delete this.InfoEditor
     },
@@ -40,6 +154,7 @@
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name"/>
+    <div id="node-input-name-message" style="color:red">&nbsp;</div>
   </div>
 
   <div class="form-row">
@@ -60,12 +175,109 @@
     <div id="node-description-editor" class="node-text-editor"
       style="height:250px; min-height:150px"></div>
   </div>
+
+  <div class="form-row">
+    <div id="node-input-target-message" style="color:red">&nbsp;</div>
+  </div>
 </script>
 <script type="text/javascript">
+//let editedNode     // "global" variable referring to the currently edited node
+
+/**** validateOutNodeName (while its entered) ****/
+
+  function validateOutNodeName () {
+    let thisName = $('#node-input-name').val().trim().toLowerCase()
+    if (thisName === '') { return }                    // no explicit name given
+
+    let wiredInNodes = RED.nodes.getAllUpstreamNodes(editedNode).filter(
+      (Node) => (Node.type === 'reusable-in')
+    )
+    if (wiredInNodes.length === 0) {
+      $('#node-input-name-message').text('no connected "reusable-in" node')
+      return
+    }
+    if (wiredInNodes.length > 1) {
+      $('#node-input-name-message').text('multiple connected "reusable-in" nodes')
+      return
+    }
+
+    let InNode = wiredInNodes[0]
+
+    let wiredOutNodes = RED.nodes.getAllDownstreamNodes(InNode).filter(
+      (Node) => (Node.type === 'reusable-out') && ! Node.isNotProperlyConnected
+    )
+    if (wiredOutNodes.length === 1) { return }   // this OutNode is the only one
+
+    for (let i = 0, l = wiredOutNodes.length; i < l; i++) {
+      let OutNode = wiredOutNodes[i]
+      if (
+        (OutNode !== editedNode) &&
+        ((OutNode.name || '').trim().toLowerCase() === thisName)
+      ) {
+        $('#node-input-name-message').text('multiple connected "reusable-out" nodes with this name')
+        return
+      }
+    }
+
+    $('#node-input-name-message').html('&nbsp;')
+  }
+
+/**** validateOutNodePosition (while its entered) ****/
+
+  function validateOutNodePosition () {
+    let wiredInNodes = RED.nodes.getAllUpstreamNodes(editedNode).filter(
+      (Node) => (Node.type === 'reusable-in')
+    )
+    if (wiredInNodes.length === 0) {
+      $('#node-input-position-message').text('no connected "reusable-in" node')
+      return
+    }
+    if (wiredInNodes.length > 1) {
+      $('#node-input-position-message').text('multiple connected "reusable-in" nodes')
+      return
+    }
+
+    let InNode = wiredInNodes[0]
+
+    let wiredOutNodes = RED.nodes.getAllDownstreamNodes(InNode).filter(
+      (Node) => (Node.type === 'reusable-out') && ! Node.isNotProperlyConnected
+    )
+
+    let thisPosition = parseInt($('#node-input-position').val(),10)
+    if (thisPosition > wiredOutNodes.length) {
+      $('#node-input-position-message').text('invalid position')
+      return
+    }
+
+    thisPosition = thisPosition.toString()     // because its stored as a string
+    for (let i = 0, l = wiredOutNodes.length; i < l; i++) {
+      let OutNode = wiredOutNodes[i]
+      if (
+        (OutNode !== editedNode) &&
+        (OutNode.position === thisPosition)
+      ) {
+        $('#node-input-position-message').text('multiple connected "reusable-out" nodes with this position')
+        return
+      }
+    }
+
+    $('#node-input-position-message').html('&nbsp;')
+  }
+
+
+
+/**** editor logic ****/
+
   RED.nodes.registerType('reusable-out', {
     category: 'advanced',
     defaults: {
-      name: {value:'reusable out'}
+      name:     { value:'reusable out', validate:validateWorkspace },
+      position: { value:1, validate:(Value) => {
+        validateWorkspace()
+
+        let Position = parseInt(Value,10)
+        return (Value >= 1) // no more validations yet
+      } },
     },
     inputs: 1,
     outputs:0,
@@ -75,6 +287,27 @@
     },
     icon: 'font-awesome/fa-sign-out',
     align:'right',
+
+    oneditprepare: function () {
+      editedNode = this
+
+      validateWorkspace()                                 // initial validations
+      validateOutNodeName()
+      validateOutNodePosition()
+
+      $('#node-input-name')    .on('input',validateOutNodeName)
+      $('#node-input-position').on('input',validateOutNodePosition)
+    },
+
+    oneditsave: function () {
+      $('#node-input-name')    .off('input',validateOutNodeName)
+      $('#node-input-position').off('input',validateOutNodePosition)
+    },
+
+    oneditcancel: function () {
+      $('#node-input-name')    .off('input',validateOutNodeName)
+      $('#node-input-position').off('input',validateOutNodePosition)
+    },
   })
 </script>
 
@@ -82,40 +315,342 @@
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name">
+    <div id="node-input-name-message" style="color:red">&nbsp;</div>
+  </div>
+
+  <div class="form-row">
+    <label for="node-input-position"><i class="fa fa-random"></i> Position</label>
+    <input type="number" id="node-input-position" min="1" step="1">
+    <div id="node-input-position-message" style="color:red">&nbsp;</div>
   </div>
 </script>
 <script type="text/javascript">
-  function validateTargetFlow (Event) {
-//  TargetFlowInput[0].style.color = (TargetFlow == null ? 'red' : 'inherit')
+//let editedNode     // "global" variable referring to the currently edited node
+
+/**** updateOutLabels ****/
+
+  function updateOutLabels () {
+    let TargetSpec = (editedNode.target || '').trim().toLowerCase()
+    if (TargetSpec === '') {
+      $('#node-input-target-message').text('missing target specification')
+      return
+    }
+
+    let WorkspaceLabel, InNodeName
+    if (TargetSpec.indexOf(':') < 0) {
+      WorkspaceLabel = ''; InNodeName = TargetSpec
+    } else {
+      WorkspaceLabel = TargetSpec.replace(/\s*:.*$/,'')
+      InNodeName     = TargetSpec.replace(/^[^:]*:\s*/,'')
+    }
+
+    let Workspace = RED.nodes.workspace(editedNode.z)
+    if (WorkspaceLabel !== '') {
+      let Workspaces = WorkspacesWithLabel(WorkspaceLabel)
+      switch (Workspaces.length) {
+        case 0:
+          $('#node-input-target-message').text('no such target workspace')
+          return
+        case 1:
+          Workspace = Workspaces[0]
+          break
+        default:
+          $('#node-input-target-message').text('multiple target workspaces')
+          return
+      }
+    }
+
+    if (InNodeName === '') {
+      $('#node-input-target-message').text('missing target flow name')
+      return
+    }
+
+    let InNodes = InNodesWithNameInWorkspace(InNodeName,Workspace).filter(
+      (InNode) => (InNode.scope === 'global') || (InNode.z === editedNode.z)
+    )
+
+    switch (InNodes.length) {
+      case 0:
+        $('#node-input-target-message').text('no such target flow')
+        return
+      case 1:
+        $('#node-input-target-message').html('&nbsp;')
+        break
+      default:
+        $('#node-input-target-message').text('multiple target flows')
+        return
+    }
+
+    let OutLabels = OutLabelsOfInNode(InNodes[0])
+
+    if (OutLabels.length !== editedNode.outputs) {
+      editedNode.outputs = OutLabels.length
+      $('#node-output-message').text('Important: please save the settings of this node in order to update the list of node outputs')
+    }
+
+    editedNode.outputLabels = OutLabels
   }
+
+/**** updateAllUseNodeOutputs (at regular intervals, unfortunately) ****/
+
+  function updateAllUseNodeOutputs () {
+    let UseNodes = existingUseNodes()
+    UseNodes.forEach((UseNode) => {
+      let TargetSpec = (UseNode.target || '').trim().toLowerCase()
+      if (TargetSpec === '') { UseNode.outputs = 1; return }
+
+      let WorkspaceLabel, InNodeName
+      if (TargetSpec.indexOf(':') < 0) {
+        WorkspaceLabel = ''; InNodeName = TargetSpec
+      } else {
+        WorkspaceLabel = TargetSpec.replace(/\s*:.*$/,'')
+        InNodeName     = TargetSpec.replace(/^[^:]*:\s*/,'')
+      }
+
+      let Workspace = RED.nodes.workspace(UseNode.z)
+      if (WorkspaceLabel !== '') {
+        let Workspaces = WorkspacesWithLabel(WorkspaceLabel)
+        if (Workspaces.length === 1) {
+          Workspace = Workspaces[0]
+        } else {
+          UseNode.outputs = 1
+          return
+        }
+      }
+
+      if (InNodeName === '') { UseNode.outputs = 1; return }
+
+      let InNodes = InNodesWithNameInWorkspace(InNodeName,Workspace).filter(
+        (InNode) => (InNode.scope === 'global') || (InNode.z === UseNode.z)
+      )
+
+      UseNode.outputs = Math.max(1,InNodes.length)
+    })
+  }
+
+/**** existingUseNodes ****/
+
+  function existingUseNodes () {
+    let Result = []
+      RED.nodes.eachNode((Node) => {
+        if (Node.type === 'reusable') { Result.push(Node) }
+      })
+    return Result
+  }/**** fillTargetChoice ****/
+
+  function fillTargetChoice () {
+    let Workspace = RED.nodes.workspace(editedNode.z)
+    let InNodes   = InNodesReachableFrom(Workspace) // list of all "reusable-in"
+
+  /**** group all "reusable-in" nodes by their workspace ****/
+
+    let Workspaces = []
+      RED.nodes.eachWorkspace((Workspace) => Workspaces.push(Workspace))
+    let InNodesInWorkspace = Object.create(null)
+      Workspaces.forEach((Workspace) => {
+        let WorkspaceLabel = Workspace.label.trim().toLowerCase()
+        InNodesInWorkspace[WorkspaceLabel] = []
+      })
+    InNodes.forEach((InNode) => {
+      let WorkspaceLabel = RED.nodes.workspace(InNode.z).label.trim().toLowerCase()
+      InNodesInWorkspace[WorkspaceLabel].push(InNode)
+    })
+
+  /**** within a workspace, sort all "reusable-in" nodes by their names ****/
+
+    function byName (NodeA,NodeB) {
+      let NameA = NodeA.name.toLowerCase()
+      let NameB = NodeB.name.toLowerCase()
+
+      switch (true) {
+        case (NameA  <  NameB): return -1
+        case (NameA === NameB): return  0
+        default:                return  1
+      }
+    }
+
+    for (let WorkspaceLabel in InNodesInWorkspace) {
+      InNodesInWorkspace[WorkspaceLabel].sort(byName)
+    }
+
+  /**** construct (and install) a grouped list of <select> options ****/
+
+    let groupedInNodeList = '<option hidden disabled selected value></option>'
+      Workspaces.forEach((Workspace) => {
+        let WorkspaceLabel  = Workspace.label.trim()    // not yet in lower case
+        let WorkspacePrefix = (Workspace === RED.nodes.workspace(editedNode.z) ? '' : WorkspaceLabel.toLowerCase() + ':')
+
+        let sortedInNodes = InNodesInWorkspace[WorkspaceLabel.toLowerCase()]
+        if (sortedInNodes.length > 0) {
+          groupedInNodeList += '<optgroup label="' + HTMLsafe(WorkspaceLabel) + '">'
+            sortedInNodes.forEach((InNode) => {
+              let InNodeName = (InNode.name || '').trim()
+              groupedInNodeList += ('<option ' +
+                'value="' + HTMLsafe(WorkspacePrefix + InNodeName.toLowerCase()) + '">' +
+                InNodeName +
+              '</option>')
+            })
+          groupedInNodeList += '</optgroup>'
+        }
+      })
+    $('#node-input-target').html(groupedInNodeList)
+
+  /**** select the currently configured InNode ****/
+
+    let OptionValue = (editedNode.target || '').trim()
+    switch (true) {
+      case (OptionValue === ''):
+      case (OptionValue.indexOf(':') < 0): break
+      default:
+        let WorkspaceLabel = OptionValue.replace(/\s*:.*$/,'').trim().toLowerCase()
+        if ((WorkspaceLabel === '') || (WorkspaceLabel === Workspace.label.trim().toLowerCase())) {
+          OptionValue = OptionValue.replace(/^[^:]*:\s*/,'')
+        }
+        editedNode.target = OptionValue
+    }
+    $('#node-input-target').val(OptionValue)
+  }
+
+/**** InNodesReachableFrom ****/
+
+  function InNodesReachableFrom (Workspace) {
+    let Result = []
+      RED.nodes.eachNode((Node) => {
+        if (
+          (Node.type === 'reusable-in')     &&
+          ((Node.name || '').trim() !== '') &&
+          ((Node.scope === 'global') || (RED.nodes.workspace(Node.z) === Workspace))
+        ) { Result.push(Node) }
+      })
+    return Result
+  }
+
+/**** HTMLsafe ****/
+
+  function HTMLsafe (Argument) {
+    return Argument.replace(
+      /[&<>"'\u0000-\u001F\u007F-\u009F\\]/g, function (Match) {
+        switch (Match) {
+          case '&':  return '&amp;'
+          case '<':  return '&lt;'
+          case '>':  return '&gt;'
+          case '"':  return '&quot;'
+          case "'":  return '&apos;'
+          case '\b': return '&#92;b'
+          case '\f': return '&#92;f'
+          case '\n': return ''             // EOL is not allowed in this context
+          case '\r': return '&#92;r'
+          case '\t': return '&#92;t'
+          case '\v': return '&#92;v'
+          case '\\': return '&#92;'
+          default:   let Result = Match.charCodeAt(0).toString(16)
+                     return '&#x0000'.substring(3,7-Result.length) + Result + ';'
+        }
+      }
+    )
+  }
+
+/**** WorkspacesWithLabel ****/
+
+  function WorkspacesWithLabel (Label) {
+    Label = Label.trim().toLowerCase()
+
+    let Result = []
+      RED.nodes.eachWorkspace((Workspace) => {
+        if (Workspace.label.trim().toLowerCase() === Label) {
+          Result.push(Workspace)
+        }
+      })
+    return Result
+  }
+
+/**** InNodesWithNameInWorkspace ****/
+
+  function InNodesWithNameInWorkspace (Name, Workspace) {
+    Name = Name.toLowerCase()
+
+    let Result = []
+      RED.nodes.eachNode((Node) => {
+        if (
+          (Node.type === 'reusable-in')               &&
+          (RED.nodes.workspace(Node.z) === Workspace) &&
+          ((Node.name || '').trim().toLowerCase() === Name)
+        ) { Result.push(Node) }
+      })
+    return Result
+  }
+
+
+
+/**** editor logic ****/
 
   RED.nodes.registerType('reusable', {
     category: 'advanced',
     defaults: {
-      name:   {value:''},
-      target: {value:'', required:true}
+      name:    { value:'',                validate:validateWorkspace },
+      target:  { value:'', required:true, validate:validateWorkspace },
+      outputs: { value:1 }
     },
     inputs: 1,
     outputs:1,
     color:  '#E9967A',
     label: function() {
-      return this.name || (this.target === '' ? null : this.target) || 'reusable'
+      if ((this.name || '') !== '') { return this.name }
+      if (this.target       === '') { return 'reusable' }
+
+      let TargetSpec = this.target, WorkspaceLabel, InNodeName
+      if (TargetSpec.indexOf(':') < 0) {
+        WorkspaceLabel = ''; InNodeName = TargetSpec
+      } else {
+        WorkspaceLabel = TargetSpec.replace(/\s*:.*$/,'')
+        InNodeName     = TargetSpec.replace(/^[^:]*:\s*/,'')
+      }
+
+      let Workspace = RED.nodes.workspace(this.z)
+      if (WorkspaceLabel !== '') {
+        let Workspaces = WorkspacesWithLabel(WorkspaceLabel)
+        switch (Workspaces.length) {
+          case 0:  return TargetSpec
+          case 1:  Workspace = Workspaces[0]; break
+          default: return TargetSpec
+        }
+      }
+
+      let InNodes = InNodesWithNameInWorkspace(InNodeName,Workspace).filter(
+        (InNode) => (InNode.scope === 'global') || (InNode.z === this.z)
+      )
+      if (InNodes.length !== 1) { return TargetSpec }
+
+      return (
+        Workspace === RED.nodes.workspace(this.z)
+        ? InNodes[0].name
+        : Workspace.label + ':' + InNodes[0].name
+      )
     },
     icon: 'font-awesome/fa-refresh',
 
     oneditprepare: function () {
-      let Node = this
-      $('#node-input-target').on('input',validateTargetFlow)
+      editedNode = this
+
+      validateWorkspace()                                 // initial validations
+      updateOutLabels()
+
+      fillTargetChoice()
     },
 
-    oneditsave: function () {
-      let Node = this
-      $('#node-input-target').off('input',validateTargetFlow)
+  /**** Callee (and Output List) Monitoring ****/
+
+    Poller: undefined,
+
+    onpaletteadd: function () {
+      this.Poller = setInterval(() => updateAllUseNodeOutputs, 1000)
     },
 
-    oneditcancel: function () {
-      let Node = this
-      $('#node-input-target').off('input',validateTargetFlow)
+    onpaletteremove: function () {
+      if (this.Poller != null) {
+        clearInterval(this.Poller)
+        this.Poller = undefined
+      }
     },
   })
 </script>
@@ -128,13 +663,19 @@
 
   <div class="form-row">
     <label for="node-input-target">Target Flow</label>
-    <input type="text" id="node-input-target" placeholder="Target Flow Specifier">
+    <select id="node-input-target">
+    </select>
+    <div id="node-input-target-message" style="color:red">&nbsp;</div>
+  </div>
+
+  <div class="form-row">
+    <div id="node-output-message" style="color:red">&nbsp;</div>
   </div>
 </script>
 
 
 <script type="text/html" data-help-name="reusable-flows">
   <p>
-    (tbd)
+    (still to be written)
   </p>
 </script>
