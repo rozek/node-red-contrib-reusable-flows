@@ -116,7 +116,7 @@ Link nodes within "reusable flows" are not yet supported:
 
 Disabled `reusable-in` or `reusable-out` nodes or disabled nodes within a "reusable flow" are not recognized as such and will not produce any error messages:
 
-![](reusable-flow-with-idisabled-nodes.png)
+![](reusable-flow-with-disabled-nodes.png)
 
 ## Detection and Display of Design Errors ##
 
