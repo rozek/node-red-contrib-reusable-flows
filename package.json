@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-reusable-flows",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "a single Node-RED node representing a complete self-contained flow",
   "node-red": {
     "nodes": {
