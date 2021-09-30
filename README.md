@@ -73,10 +73,16 @@ In order to simplify wiring (and keep it consistent across changes) each `reusab
 
 All `reusable-out` nodes connected to the same `reusable-in` must have unique output positions and unique labels (or no label at all). Additionally, no `reusable-out` node may be connected to multiple `reusable-in` nodes.
 
-### Exception handling ###
+### Exception Handling ###
+
+`catch` nodes may be used to intercept errors that occur within a "reusable flow" and react as needed. In the end, these nodes may be wired either to a separate flow output or to one which is already connected to a `reusable-in` (i.e., which is not part of another `catch` flow)
 
 ![](catch-with-common-output.png)
 ![](catch-with-separate-outputs.png)
+
+However, if a `catch` node is supposed to feed a separate `reusable-out` node a small problem arises: that output is not connected to any `reusable-in` node. In order to get around this problem, a "dummy connection" has to be established between the `catch` output and the `reusable-in` node this `catch` node belongs to. In the simplest case, this may be achieved by inserting a `function` node that does not send any `msg` (i.e., whose body is completely empty) between the `reusable-in` node and the `reusable-out` node fed by the `catch` node.
+
+Nota bene: a `catch` node must never catch exceptions from nodes which belong to different "reusable flows" or be connected to a `reusable-out` node that is connected to a different `reusable-in` than the nodes the `catch` node is observing!
 
 
 
