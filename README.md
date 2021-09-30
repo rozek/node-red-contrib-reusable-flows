@@ -80,9 +80,9 @@ All `reusable-out` nodes connected to the same `reusable-in` must have unique ou
 ![](catch-with-common-output.png)
 ![](catch-with-separate-outputs.png)
 
-However, if a `catch` node is supposed to feed a separate `reusable-out` node a small problem arises: that output is not connected to any `reusable-in` node. In order to get around this problem, a "dummy connection" has to be established between the `catch` output and the `reusable-in` node this `catch` node belongs to. In the simplest case, this may be achieved by inserting a `function` node that does not send any `msg` (i.e., whose body is completely empty) between the `reusable-in` node and the `reusable-out` node fed by the `catch` node.
+However, if a `catch` node is supposed to feed a separate `reusable-out` a small problem arises: that output is not connected to any `reusable-in` node. In order to get around this problem, a "dummy connection" has to be established between the `catch` output and the `reusable-in` this `catch` node belongs to. In the simplest case, this may be achieved by inserting a `function` node that does not send any `msg` (i.e., whose body is completely empty) between the `reusable-in` and the `reusable-out` fed by the `catch` node.
 
-Nota bene: a `catch` node must never catch exceptions from nodes which belong to different "reusable flows" or be connected to a `reusable-out` node that is connected to a different `reusable-in` than the nodes the `catch` node is observing!
+Nota bene: a `catch` node must never catch exceptions from nodes which belong to different "reusable flows" or be wired to a `reusable-out` that is connected to a different `reusable-in` than the nodes the `catch` node is observing!
 
 
 
