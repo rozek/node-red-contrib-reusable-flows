@@ -47,11 +47,11 @@ The nodes `reusable-in`, `reusable-out` and `reusable` will then appear in the p
 
 The typical workflow of designing and using "reusable flows" is as follows (individual features will be explained in the following sections):
 
-1. drag a `reusable-in` node from the palette onto your workspace and open the configuration editor by double-clicking on it
+1. drag a `reusable-in` node from the palette onto your workspace and open the configuration editor by double-clicking it
 2. enter a descriptive name for this node and choose its scope (new `reusable-in` nodes are `local` by default)
 3. if desired, add any nodes you need in order to implement the new "reusable flow"
 4. then drag a `reusable-out` node from the palette onto your workspace and make sure that this node is directly or indirectly connected to the `reusable-in` node created before
-5. add more `reusable-out` nodes for the `reusable-in` as needed (but don't forget to select different output positions and - if need be - different output labels)
+5. add more `reusable-out` nodes for the `reusable-in` as needed (but don't forget to select different output positions and - if need be - different output labels for each of them)
 6. you are now ready to drag a `reusable` node from the palette onto your workspace and configure the newly created "reusable flow" as its target. For that purpose double-click on the `reusable` node and choose the intended "reusable flow" from the drop-down menu. Save your configuration by clicking on "Done"
 
 ### Reusable Flow Lookup ###
@@ -60,7 +60,7 @@ The typical workflow of designing and using "reusable flows" is as follows (indi
 
 ![](reusables-on-same-tab.png)
 
-`reusable` nodes may invoke "reusable flows" on the same tab or on different tabs. If the targeted `reusable-in` is found on a different tab than the `reusable`, the target flow name has to be prefixed with the name of the tab it is found in, and separated from the `reusable-in` name by a colon (`:`). Again, the editor's drop-down menu simplifies the assignment, but changing the tab label at a later time will require a reassignment of all `reusable` nodes from other tabs that refer to flows on this one.
+`reusable` nodes may invoke "reusable flows" on the same tab or on different tabs. If the targeted `reusable-in` is found on a different tab than the `reusable`, the target flow name has to be prefixed with the name of the tab it is found in, and separated from the `reusable-in` name by a colon (`:`) - for that reason, **neither tab labels nor the names of `reusable-in` nodes should contain any colons!**. Again, the editor's drop-down menu simplifies the assignment, but changing the tab label at a later time will require a reassignment of all `reusable` nodes from other tabs that refer to flows on this one.
 
 ### Scoping ###
 
