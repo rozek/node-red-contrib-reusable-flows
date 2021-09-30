@@ -45,6 +45,15 @@ The nodes `reusable-in`, `reusable-out` and `reusable` will then appear in the p
 
 ![](reusable-flows.png)
 
+The typical workflow of designing and using "reusable flows" is as follows:
+
+1. drag a `reusable-in` node from the palette onto your workspace and open the configuration editor by double-clicking on it
+2. enter a descriptive name for this node and choose its scope (new `reusable-in` node are `local` by default)
+3. if desired, add any nodes you need in order to implement the new reusable flow
+4. then drag a `reusable-out` node from the palette onto your workspace and make sure that this node is directly or indirectly connected to the `reusable-in` node created before
+5. add more `reusable-out` nodes for the `reusable-in` as needed (but don't forget to select different output positions and - if need be - different output labels)
+6. you are now ready to drag a `reusable` node from the palette onto your workspace and configure the newly created "reusable flow" as its target. For that purpose double-click on the `reusable` node and choose the intended "reusable flow" from the drop-down menu. Save your configuration by clicking on "Done"
+
 ### Reusable Flow Lookup ###
 
 "Reusable flows" are found by the name of their `reusable-in` nodes. Within the Node-RED flow editor, a drop-down menu simplifies name input by offering a choice of all currently found `reusable-in` nodes. However, if the name of a `reusable-in` that has already been chosen as the target of any `reusable` nodes is changed at a later time, all these `reusable` nodes will loose their association and will have to be reassigned again.
