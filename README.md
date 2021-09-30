@@ -43,10 +43,11 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 ### Reusable Flow Lookup ###
 
-"Reusable flows" are found by the name of their `reusable-in` nodes. Within the Node-RED flow editor, a drop-down menu simplifies name input by offering a choice of all currently found `reusable-in` nodes. However, if the name of a `reusable-in` that has already been chosen as the target of any `reusable` nodes is changed at a later time, all these `reusable` nodes will loose their association and will have to be updated again.
+"Reusable flows" are found by the name of their `reusable-in` nodes. Within the Node-RED flow editor, a drop-down menu simplifies name input by offering a choice of all currently found `reusable-in` nodes. However, if the name of a `reusable-in` that has already been chosen as the target of any `reusable` nodes is changed at a later time, all these `reusable` nodes will loose their association and will have to be reassigned again.
 
 ![](reusables-on-same-tab.png)
 
+`reusable` nodes may invoke "reusable flows" on the same tab or on different tabs. If the targeted `reusable-in` is found on a different tab than the `reusable`, the target flow name has to be prefixed with the name of the tab it is found in, and separated from the `reusable-in` name by a colon (`:`). Again, the editor's drop-down menu simplifies the assignment, but changing the tab label at a later time will require a reassignment of all `reusable` nodes from other tabs that refer to flows on this one.
 
 ### Scoping ###
 
