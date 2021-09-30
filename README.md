@@ -41,6 +41,14 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 
 
+### Reusable Flow Lookup ###
+
+"Reusable flows" are found by the name of their `reusable-in` nodes. Within the Node-RED flow editor, a drop-down menu simplifies name input by offering a choice of all currently found `reusable-in` nodes. However, if the name of a `reusable-in` that has already been chosen as the target of any `reusable` nodes is changed at a later time, all these `reusable` nodes will loose their association and will have to be updated again.
+
+![](reusables-on-same-tab.png)
+
+
+### Scoping ###
 
 
 ### Single or multiple Outputs ###
