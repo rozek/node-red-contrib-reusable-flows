@@ -26,12 +26,6 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 ![](reusable-flows.png)
 
-![](reusables-on-same-tab.png)
-
-![](reusables-on-different-tab-I.png)
-
-![](reusables-on-different-tab-II.png)
-
 ![](incorrect-reusable-nodes.png)
 
 ![](incorrect-reusable-in-nodes.png)
@@ -51,6 +45,13 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 ### Scoping ###
 
+Being able to place several "reusable flows" on a tab allows for the implementation of flow "libraries". For that reason, a `scope` property can be used to classify `reusable-in` nodes as "private" or "public": `reusable-in` nodes with scope `local` may be invoked from the same tab only, those with scope `global` from everywhere.
+
+![](reusables-on-different-tab-I.png)
+
+![](reusables-on-different-tab-II.png)
+
+Within the Node-RED editor, the target flow drop-down menu of `reusable` nodes already takes the visibility of `reusable-in` nodes into account and presents actually visible flows only.
 
 ### Single or multiple Outputs ###
 
