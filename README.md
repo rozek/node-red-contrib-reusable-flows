@@ -112,6 +112,14 @@ Link nodes within "reusable flows" are not yet supported:
 
 ![](reusable-flow-with-inner-links.png)
 
+### Disabled Nodes ###
+
+Disabled `reusable-in` or `reusable-out` nodes or disabled nodes within a "reusable flow" are not recognized as such and will not produce any error messages:
+
+![](reusable-flow-with-disabled-nodes.png)
+
+They are just treated as if they were enabled (but cannot be executed, however)
+
 ## Detection and Display of Design Errors ##
 
 Correct "reusable flows" require a lot of conditions to be met: `reusable` nodes must target an existing (and correct) `reusable-in` node, that node must be directly or indirectly wired to one or multiple `reusable-out` nodes, all `reusable-out` nodes for the same `reusable-in` must be configured for different outputs, etc.
