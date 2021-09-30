@@ -62,6 +62,19 @@ _Not keeping this implementation detail in mind may lead to unpredicatable behav
 
 
 
+### Single or multiple Outputs ###
+
+A "reusable flow" may have a single or multiple outputs - depending on the number or `reusable-out` nodes connected to the same `reusable-in`. `reusable` nodes reflect the actual number of outputs of their target flows.
+
+![](reusable-flow-with-single-output.png)
+![](reusable-flow-with-multiple-outputs.png)
+
+In order to simplify wiring (and keep it consistent across changes) each `reusable-out` node must indicate to which output it belongs. This is done by specifying a "position" (the 1-based number of the output it belongs to) and an optional label (which is shown in any `reusable` node that targets the `reusable-in` connected to this `reusable-out`)
+
+All `reusable-out` nodes connected to the same `reusable-in` must have unique output positions and unique labels (or no label at all). Additionally, no `reusable-out` node may be connected to multiple `reusable-in` nodes.
+
+
+
 
 ### Inhibiting multiple returns from the same Invocation ###
 
