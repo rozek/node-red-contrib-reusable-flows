@@ -16,6 +16,10 @@ Three types of nodes are involved:
 
 > Nota bene: this work is currently in progress. Please don't expect it to be finished before end of September 2021!
 
+**NPM users**: please consider the [Github README](https://github.com/rozek/node-red-contrib-reusable-flows/blob/main/README.md) for the latest description of this package (as updating the docs would otherwise always require a new NPM package version)
+
+> Just a small note: if you like this work and plan to use it, consider "starring" this repository (you will find the "Star" button on the top right of this page), so that I know which of my repositories to take most care of.
+
 ### Alternatives ###
 
 Node-RED (and its ecosystem) already offer some mechanisms to structure non-trivial flows:
