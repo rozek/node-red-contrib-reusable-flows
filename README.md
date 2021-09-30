@@ -23,17 +23,11 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 * **Action Flows** (from [node-red-contrib-actionflows](https://flows.nodered.org/node/node-red-contrib-actionflows)) are really powerful, put their name prefix matching scheme can lead to difficulat to find problems - and they do not support multiple outputs
 * **Components** (from [node-red-contrib-components](https://flows.nodered.org/node/node-red-contrib-components)) come quite close to what "reusable flows" aim to provide - but the association between "callers" and "callees" is based on the unique ids of the associated nodes which causes several problems
 
+## Installation ##
+
+## Flow Design ##
 
 ![](reusable-flows.png)
-
-![](incorrect-reusable-nodes.png)
-
-![](incorrect-reusable-in-nodes.png)
-
-![](incorrect-reusable-out-nodes.png)
-
-
-
 
 ### Reusable Flow Lookup ###
 
@@ -45,7 +39,7 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 ### Scoping ###
 
-Being able to place several "reusable flows" on a tab allows for the implementation of flow "libraries". For that reason, a `scope` property can be used to classify `reusable-in` nodes as "private" or "public": `reusable-in` nodes with scope `local` may be invoked from the same tab only, those with scope `global` from everywhere.
+Being able to place several "reusable flows" on a single tab allows for the implementation of flow "libraries". For that purpose, a `scope` property can be used to classify `reusable-in` nodes as either "private" or "public": `reusable-in` nodes with scope `local` may be invoked from the same tab only, those with scope `global` from everywhere.
 
 ![](reusables-on-different-tab-I.png)
 
@@ -87,6 +81,14 @@ However, if a `catch` node is supposed to feed a separate `reusable-out` a small
 
 Nota bene: a `catch` node must never catch exceptions from nodes which belong to different "reusable flows" or be wired to a `reusable-out` that is connected to a different `reusable-in` than the nodes the `catch` node is observing!
 
+## Detection and Display of Design Errors ##
+
+
+![](incorrect-reusable-nodes.png)
+
+![](incorrect-reusable-in-nodes.png)
+
+![](incorrect-reusable-out-nodes.png)
 
 
 
