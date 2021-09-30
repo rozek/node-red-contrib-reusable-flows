@@ -11,8 +11,8 @@ Three types of nodes are involved:
 ![](reusable-flows.png)
 
 * **`reusable-in`** - starts a new "reusable flow"
-* **`reusable-out`** - ends a "reusable flow" (multiple `reusable-out` nodes are allowed for the same `reusable-in`)
-* **`reusable`** - effectively "invokes" a reusable flow (i.e., the incoming `msg` is passed to the associated `reusable-in` and the `msg` read by the first connected `reusable-out` passed to the appropriate output of this `reusable` node)
+* **`reusable-out`** - ends a "reusable flow"<br>(multiple `reusable-out` nodes are allowed for the same `reusable-in`)
+* **`reusable`** - effectively "invokes" a reusable flow<br>(i.e., the incoming `msg` is passed to the associated `reusable-in` and the `msg` read by the first connected `reusable-out` passed to the appropriate output of this `reusable` node)
 
 > Nota bene: this work is currently in progress. Please don't expect it to be finished before end of September 2021!
 
