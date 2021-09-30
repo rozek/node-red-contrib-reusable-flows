@@ -106,6 +106,12 @@ However, if a `catch` node is supposed to feed a separate `reusable-out` a small
 
 Nota bene: a `catch` node must never catch exceptions from nodes which belong to different "reusable flows" or be wired to a `reusable-out` that is connected to a different `reusable-in` than the nodes the `catch` node is observing!
 
+### Link Nodes ###
+
+Link nodes within "reusable flows" are not yet supported:
+
+![](reusable-flow-with-inner-links.png)
+
 ## Detection and Display of Design Errors ##
 
 Correct "reusable flows" require a lot of conditions to be met: `reusable` nodes must target an existing (and correct) `reusable-in` node, that node must be directly or indirectly wired to one or multiple `reusable-out` nodes, all `reusable-out` nodes for the same `reusable-in` must be configured for different outputs, etc.
