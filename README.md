@@ -61,15 +61,20 @@ _Not keeping this implementation detail in mind may lead to unpredicatable behav
 ![](recursive-invocations.png)
 
 
+
+
 ### Inhibiting multiple returns from the same Invocation ###
 
 In order to avoid bugs which may be very difficult to find, "reusable flows" inhibit multiple returns from the same invocation.
 
-![](multiple-returns.png)
-
 If the body of a "reusable flow" splits the flow such that a `msg` (or clones of it) triggers the same `reusable-out` several times or triggers several `reusable-out` nodes one after another, only the first triggered `reusable-out` node will actually return from the invocation - all others will fail.
 
+![](multiple-returns.png)
+
 In other words: a single invocation of a "reusable flow" will only produce a single result.
+
+
+
 
 
 ## Build Instructions ##
