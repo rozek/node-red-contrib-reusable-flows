@@ -6,7 +6,7 @@
   type NR_Config    = any
   type NR_Msg = {
     topic?:string, payload:any, script?:string,
-    _reusableFlows:{ Mode?:'return', Index?:number, Stack:NR_Id[] }
+    _reusableFlows:{ Mode?:'return', Index?:number, Stack:number[] }
   }
   type NR_send   = (msg:NR_Msg | NR_Msg[] | NR_Msg[][] | null) => void
   type NR_done   = (err?:any) => void
@@ -14,6 +14,11 @@
 /**** actual node definition ****/
 
   export default function (RED:any):void {
+    let NodeSet:{ [Id:string]:NR_Node }        // will be filled at flow startup
+
+    let InvocationCounter:number                    = 0
+    let InvocationMapper:{ [Index:number]:NR_Node } = Object.create(null)
+
   /**** resuable-in ****/
 
     function ReusableIn (this:any, config:NR_Config):void {
@@ -99,8 +104,20 @@
         try {
           let Internals = msg._reusableFlows
 
-          let callingNodeId = Internals.Stack.pop()
-          if (callingNodeId == null) {
+          let InvocationIndex = Internals.Stack.pop()
+          if (InvocationIndex == null) {
+            throw 'reusable-out: no invocation to return to found'
+          }
+
+          let callingNodeId = InvocationMapper[InvocationIndex]
+            delete InvocationMapper[InvocationIndex] // don't reuse this return!
+          if (typeof callingNodeId !== 'string') {
+            throw 'reusable-out: broken invocation ' +
+              '(did you try to return several times from the same invocation?)'
+          }
+
+          let callingNode = NodeSet[callingNodeId]
+          if (callingNode == null) {
             throw 'reusable-out: no "reusable" node to return to found'
           } else {
             Internals.Mode  = 'return'
@@ -110,7 +127,9 @@
           }
         } catch (Signal) {
           return (done == null ? thisNode.error : done)(
-            'reusable-out: broken "msg" (broken or missing internals)'
+            typeof Signal === 'string'
+            ? Signal
+            : 'reusable-out: broken "msg" (broken or missing internals)'
           )
         }
       })
@@ -174,7 +193,10 @@
 
         switch (Internals.Mode) {
           case undefined:                                              // 'call'
-            Internals.Stack.push(config.id)
+            InvocationCounter += 1
+            InvocationMapper[InvocationCounter] = config.id
+
+            Internals.Stack.push(InvocationCounter)
             RED.events.emit('reusable:' + thisNode._TargetNode.id, msg)
             break
           case 'return':                                             // 'return'
@@ -256,7 +278,7 @@
   /**** validateReusableFlows ****/
 
     function validateReusableFlows () {
-      let NodeSet = Object.create(null)  // collect all nodes for a quick lookup
+      NodeSet = Object.create(null)      // collect all nodes for a quick lookup
       RED.nodes.eachNode((Node:NR_Node) => {
         NodeSet[Node.id] = Node
       })
