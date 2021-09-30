@@ -62,6 +62,14 @@ _Not keeping this implementation detail in mind may lead to unpredicatable behav
 
 
 
+### Single or multiple Outputs ###
+
+A "reusable flow" may have a single or multiple outputs - depending on the number or `reusable-out` nodes connected to the same `reusable-in`. `reusable` nodes reflect the actual number of outputs of their target flows.
+
+![](reusable-flow-with-single-output.png)
+![](reusable-flow-with-multiple-outputs.png)
+
+
 
 ### Inhibiting multiple returns from the same Invocation ###
 
