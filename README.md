@@ -120,6 +120,10 @@ Disabled `reusable-in` or `reusable-out` nodes or disabled nodes within a "reusa
 
 They are just treated as if they were enabled (but cannot be executed, however)
 
+### Resuable Flows and Subflows ###
+
+Due to the special nature of subflows, neither `reusable-in`, `reusable-out` nor `reusable` nodes may be used in subflows. It is, however, perfectly possible to invoke subflows from within a "reusable flow".
+
 ## Detection and Display of Design Errors ##
 
 Correct "reusable flows" require a lot of conditions to be met: `reusable` nodes must target an existing (and correct) `reusable-in` node, that node must be directly or indirectly wired to one or multiple `reusable-out` nodes, all `reusable-out` nodes for the same `reusable-in` must be configured for different outputs, etc.
