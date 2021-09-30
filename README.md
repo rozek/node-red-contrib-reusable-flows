@@ -27,6 +27,16 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 ## Installation ##
 
+Run the following command in your Node-RED user directory (typically `~/.node-red`):
+
+```
+npm install node-red-contrib-reusable-flows
+```
+
+restart your Node-RED server and (if already open) reload the Node-RED editor.
+
+The nodes `reusable-in`, `reusable-out` and `reusable` will then appear in the palette within group "advanced".
+
 ## Flow Design ##
 
 ![](reusable-flows.png)
