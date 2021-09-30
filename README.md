@@ -45,7 +45,7 @@ The nodes `reusable-in`, `reusable-out` and `reusable` will then appear in the p
 
 ![](reusable-flows.png)
 
-The typical workflow of designing and using "reusable flows" is as follows (the individual features will be explained in the following sections):
+The typical workflow of designing and using "reusable flows" is as follows (individual features will be explained in the following sections):
 
 1. drag a `reusable-in` node from the palette onto your workspace and open the configuration editor by double-clicking on it
 2. enter a descriptive name for this node and choose its scope (new `reusable-in` node are `local` by default)
