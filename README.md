@@ -73,6 +73,11 @@ In order to simplify wiring (and keep it consistent across changes) each `reusab
 
 All `reusable-out` nodes connected to the same `reusable-in` must have unique output positions and unique labels (or no label at all). Additionally, no `reusable-out` node may be connected to multiple `reusable-in` nodes.
 
+### Exception handling ###
+
+![](catch-with-common-output.png)
+![](catch-with-separate-outputs.png)
+
 
 
 
