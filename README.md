@@ -8,6 +8,8 @@ The underlying objective is to have an alternative to "function" nodes which is 
 
 Three types of nodes are involved:
 
+![](reusable-flows.png)
+
 * `reusable-in` - starts a new "reusable flow"
 * `reusable-out` - ends a "reusable flow" (multiple `reusable-out` nodes are allowed for any `reusable-in`)
 * `reusable` - effectively "invokes" a reusable flow (i.e., the incoming `msg` is passed to the associated `reusable-in` and the `msg` read by the first connected `reusable-out` passed to the appropriate output of this `reusable` node)
