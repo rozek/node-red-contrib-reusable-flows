@@ -118,15 +118,15 @@ In order to simplify fixing broken flows, `reusable` nodes also indicate errors 
 
 > Nota bene: incorrect `reusable` nodes can not be used. Instead, they write an error message on the debug console whenever they are triggered.
 
+The following screenshots give an overview of how incorrect nodes may look like:
+
 ![](incorrect-reusable-in-nodes.png)
 
 ![](incorrect-reusable-out-nodes.png)
 
 ![](incorrect-reusable-nodes.png)
 
-
-
-### Inhibiting multiple returns from the same Invocation ###
+## Inhibiting multiple returns from the same Invocation ##
 
 In order to avoid bugs which may be very difficult to find, "reusable flows" inhibit multiple returns from the same invocation.
 
