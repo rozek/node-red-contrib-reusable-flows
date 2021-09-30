@@ -21,6 +21,11 @@
       return
     }
 
+    if (thisName.indexOf(':') >= 0) {
+      $('#node-input-name-message').text('flow names must not contain colons (":")')
+      return
+    }
+
     let thisWorkspace = RED.nodes.workspace(editedNode.z)
     let thisWorkspaceHasOtherNodesWithThisName = false
       RED.nodes.eachNode((Node) => {
@@ -104,14 +109,16 @@
   RED.nodes.registerType('reusable-in', {
     category: 'advanced',
     defaults: {
-      name: { value:'',      required:true,             validate:validateWorkspace },
+      name: { value:'',      required:true, validate: function (Value) {
+        return validateWorkspace() && (Value.indexOf(':') < 0)
+      } },
       info: { value:'describe your reusable flow here', validate:validateWorkspace },
       scope:{ value:'local', required:true,             validate:validateWorkspace },
     },
     inputs: 0,
     outputs:1,
     color:  '#D5F0AA',
-    label: function() {
+    label: function () {
       let Label = this.name || 'reusable in'
       return (this.scope === 'local' ? '[' + Label + ']' : Label)
     },
