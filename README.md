@@ -1,6 +1,6 @@
 # node-red-contrib-reusable-flows #
 
-`node-red-contrib-reusable-flows` provides nodes that represent complete flows and make them "callable" from other flows (returning to the calling node when the end of a reusable flow has been reached).
+`node-red-contrib-reusable-flows` provides nodes that represent complete flows and make them "callable" from other flows (returning to the calling node when the end of a "reusable flow" has been reached).
 
 The desire for such a package arose from the need to be able to reuse existing flows without having to copy them and without having to spend a separate editor tab for each such flow.
 
@@ -12,7 +12,7 @@ Three types of nodes are involved:
 
 * **`reusable-in`** - starts a new "reusable flow"
 * **`reusable-out`** - ends a "reusable flow"<br>(multiple `reusable-out` nodes are allowed for the same `reusable-in`)
-* **`reusable`** - effectively "invokes" a reusable flow<br>(i.e., the incoming `msg` is passed to the associated `reusable-in` and the `msg` read by the first triggered `reusable-out` passed back to the appropriate output of this `reusable` node)
+* **`reusable`** - effectively "invokes" a "reusable flow"<br>(i.e., the incoming `msg` is passed to the associated `reusable-in` and the `msg` read by the first triggered `reusable-out` passed back to the appropriate output of this `reusable` node)
 
 > Nota bene: this work is currently in progress. Please don't expect it to be finished before end of September 2021!
 
@@ -49,7 +49,7 @@ The typical workflow of designing and using "reusable flows" is as follows (indi
 
 1. drag a `reusable-in` node from the palette onto your workspace and open the configuration editor by double-clicking on it
 2. enter a descriptive name for this node and choose its scope (new `reusable-in` nodes are `local` by default)
-3. if desired, add any nodes you need in order to implement the new reusable flow
+3. if desired, add any nodes you need in order to implement the new "reusable flow"
 4. then drag a `reusable-out` node from the palette onto your workspace and make sure that this node is directly or indirectly connected to the `reusable-in` node created before
 5. add more `reusable-out` nodes for the `reusable-in` as needed (but don't forget to select different output positions and - if need be - different output labels)
 6. you are now ready to drag a `reusable` node from the palette onto your workspace and configure the newly created "reusable flow" as its target. For that purpose double-click on the `reusable` node and choose the intended "reusable flow" from the drop-down menu. Save your configuration by clicking on "Done"
