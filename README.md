@@ -108,12 +108,19 @@ Nota bene: a `catch` node must never catch exceptions from nodes which belong to
 
 ## Detection and Display of Design Errors ##
 
+Correct "reusable flows" require a lot of conditions to be met: `reusable` nodes must target an existing (and correct) `reusable-in` node, that node must be directly or indirectly wired to one or multiple `reusable-out` nodes, all `reusable-out` nodes for the same `reusable-in` must be configured for different outputs, etc.
 
-![](incorrect-reusable-nodes.png)
+Unfortunately, the Node-RED editor is not yet prepared to handle dependencies between different nodes. As a consequence, the current implementation of "reusable flows" uses a mixture of (error) messages in node configuration dialogs and status messages underneath the nodes themselves in order to indicate design errors. The former appear at design time (i.e., before deployment - but only if the configuration dialog for a faulty node is open), the latter at runtime (i.e., *after* deployment). As a consequence, status messages may be "out-of-date" if you already fixed the shown errors, but they still give a good overview of what seems to be wrong.
+
+In order to simplify fixing broken flows, `reusable` nodes also indicate errors in their target flows (i.e., the targeted `reusable-in` and `reusable-out` nodes)
+
+> Nota bene: incorrect `reusable` nodes can not be used. Instead, they write an error message on the debug console whenever they are triggered.
 
 ![](incorrect-reusable-in-nodes.png)
 
 ![](incorrect-reusable-out-nodes.png)
+
+![](incorrect-reusable-nodes.png)
 
 
 
