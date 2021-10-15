@@ -30,7 +30,9 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 ## Installation ##
 
-Run the following command in your Node-RED user directory (typically `~/.node-red`):
+To install these nodes, use `Menu` ➜ `Manage palette` ➜ `Manage palette`, search for module `node-red-contrib-reusable-flows` and click on `install`.
+
+Alternatively, run the following command from a command line after navigating to your Node-RED user directory (typically `~/.node-red`):
 
 ```
 npm install node-red-contrib-reusable-flows
