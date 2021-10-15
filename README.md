@@ -24,6 +24,7 @@ Node-RED (and its ecosystem) already offer some mechanisms to structure non-triv
 
 * **Subflows** are very similar to "reusable flows" - but each subflow consumes its own tab in the editor which makes work with many subflows unmanageable
 * **Link In** and **Link Out** nodes have their own raison d'être but are more like "goto"s rather than invocations
+* **Link Call** nodes (available since version 2.1.0 for flows starting with a **Link In** and ending with a **Link Out** node put into "return" mode) do not support flows with multiple outputs
 * **Action Flows** (from [node-red-contrib-actionflows](https://flows.nodered.org/node/node-red-contrib-actionflows)) are really powerful, put their name prefix matching scheme can lead to difficult to find problems - and they do not support multiple outputs
 * **Components** (from [node-red-contrib-components](https://flows.nodered.org/node/node-red-contrib-components)) come quite close to what "reusable flows" aim to provide - but the association between "callers" and "callees" is based on the unique ids of the associated nodes which causes several problems
 
