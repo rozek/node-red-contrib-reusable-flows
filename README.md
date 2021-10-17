@@ -61,7 +61,7 @@ The typical workflow of designing and using "reusable flows" is as follows (indi
 
 ![](reusables-on-same-tab.png)
 
-`reusable` nodes may invoke "reusable flows" on the same tab or on different tabs. If the targeted `reusable-in` is found on a different tab than the `reusable`, the target flow name has to be prefixed with the name of the tab it is found in, and separated from the `reusable-in` name by a colon (`:`) - for that reason, **neither tab labels nor the names of `reusable-in` nodes should contain any colons!**. Again, the editor's drop-down menu simplifies the assignment, but changing the tab label at a later time will require a reassignment of all `reusable` nodes from other tabs that refer to flows on this one.
+`reusable` nodes may invoke "reusable flows" on the same tab or on different tabs. If the targeted `reusable-in` is found on a different tab than the `reusable`, the target flow name has to be prefixed with the name of the tab it is found in, and separated from the `reusable-in` name by a colon (`:`) - for that reason, **neither tab labels nor the names of `reusable-in` nodes should contain any colons!** Again, the editor's drop-down menu simplifies the assignment, but changing the tab label at a later time will require a reassignment of all `reusable` nodes from other tabs that refer to flows on this one.
 
 ### Scoping ###
 
