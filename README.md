@@ -73,9 +73,9 @@ Being able to place several "reusable flows" on a single tab allows for the impl
 
 Within the Node-RED editor, the target flow drop-down menu of `reusable` nodes already takes the visibility of `reusable-in` nodes into account and presents actually visible flows only.
 
-### Single or multiple Outputs ###
+### Single or Multiple Outputs ###
 
-A "reusable flow" may have a single or multiple outputs - depending on the number or `reusable-out` nodes connected to the same `reusable-in`. `reusable` nodes reflect the actual number of outputs of their target flows.
+A "reusable flow" may have a single or multiple outputs - depending on the number of `reusable-out` nodes connected to the same `reusable-in`. `reusable` nodes reflect the actual number of outputs of their target flows.
 
 ![](reusable-flow-with-single-output.png)
 ![](reusable-flow-with-multiple-outputs.png)
