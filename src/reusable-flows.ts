@@ -33,7 +33,7 @@
       thisNode.on('input', function (msg:NR_Msg, send?:NR_send, done?:NR_done) {
         if (! thisNode._mayBeUsed) {
           return (done == null ? thisNode.error : done)(
-            'reusable-in: must not be used due to design errors'
+            'reusable-in: must not be used due to pending errors'
           )
         }
 
@@ -97,7 +97,7 @@
       thisNode.on('input', function (msg:NR_Msg, send?:NR_send, done?:NR_done) {
         if (! thisNode._mayBeUsed) {
           return (done == null ? thisNode.error : done)(
-            'reusable-out: must not be used due to design errors'
+            'reusable-out: must not be used due to pending errors'
           )
         }
 
@@ -180,7 +180,7 @@
       thisNode.on('input', function (msg:NR_Msg, send?:NR_send, done?:NR_done) {
         if (! thisNode._mayBeUsed) {
           return (done == null ? thisNode.error : done)(
-            'reusable: must not be used due to design errors'
+            'reusable: must not be used due to pending errors'
           )
         }
 
